@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import RoomTypeSelector from "../common/roomTypeSelector";
+import RoomTypeSelector from "../common/RoomTypeSelector";
 import { addRoom } from "../utils/Apifunctions";
+import ExistingRooms from "./ExistingRooms";
 
 const AddRoom = () => {
   const [newRoom, setNewRoom] = useState({
@@ -123,17 +124,18 @@ const AddRoom = () => {
                     src={imagePreview}
                     alt="Preview  room photo"
                     style={{ maxWidth: "400px", maxHeight: "400px" }}
-                    className="mb-3"
+                    className="mt-3"
                   ></img>
                 )}
               </div>
-              <div className="d-grid d-md-flex mt-2">
+              <div className="d-grid gap-2 d-md-flex mt-2">
                 <button type="submit" className="btn btn-outline-primary ml-5">
                   Save Room
                 </button>
               </div>
             </form>
           </div>
+          <ExistingRooms />
         </div>
       </section>
     </>
