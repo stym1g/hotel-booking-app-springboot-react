@@ -1,6 +1,8 @@
 package com.example.hotelbookingappspringbootreact.service;
 
 import com.example.hotelbookingappspringbootreact.model.Room;
+import com.example.hotelbookingappspringbootreact.response.RoomResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -12,4 +14,9 @@ public interface IRoomService {
     Room addNewRoom(MultipartFile file, String roomType, BigDecimal roomPrice) throws SQLException, IOException;
 
     List<String> getAllRoomTypes();
+    public List<Room> getAllRooms();
+
+    byte[] getRoomPhotoByRoomId(Long roomId) throws SQLException;
+
+    void deleteRoom(Long roomId);
 }

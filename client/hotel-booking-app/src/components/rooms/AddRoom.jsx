@@ -6,7 +6,7 @@ import ExistingRooms from "./ExistingRooms";
 const AddRoom = () => {
   const [newRoom, setNewRoom] = useState({
     photo: null,
-    roomtype: "",
+    roomType: "",
     roomPrice: "",
   });
 
@@ -38,14 +38,14 @@ const AddRoom = () => {
     try {
       const success = await addRoom(
         newRoom.photo,
-        newRoom.roomtype,
+        newRoom.roomType,
         newRoom.roomPrice
       );
       if (success != undefined) {
         setSuccessMessage("A new room was added to the database");
         setNewRoom({
           photo: null,
-          roomtype: "",
+          roomType: "",
           roomPrice: "",
         });
         setImagePreview("");
