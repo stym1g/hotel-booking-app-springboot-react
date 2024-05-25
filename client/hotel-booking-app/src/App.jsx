@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from './components/home/Home'
 import Editroom from './components/rooms/Editroom'
 import ExistingRooms from './components/rooms/ExistingRooms'
+import NavBar from './components/layout/NavBar'
+import Footer from './components/layout/Footer'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,6 +16,7 @@ function App() {
     <>
     <main>
       <Router>
+      <NavBar />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/edit-room/:roomId' element={<Editroom />} />
@@ -21,6 +24,7 @@ function App() {
           <Route path='/add-room' element={<AddRoom />} />
         </Routes>
       </Router>
+      <Footer />
     </main>
     </>
   )
