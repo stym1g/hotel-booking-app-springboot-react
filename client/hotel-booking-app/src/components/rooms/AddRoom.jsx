@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import RoomTypeSelector from "../common/RoomTypeSelector";
 import { addRoom } from "../utils/Apifunctions";
 import ExistingRooms from "./ExistingRooms";
+import { Link } from 'react-router-dom';
 
 const AddRoom = () => {
   const [newRoom, setNewRoom] = useState({
@@ -57,9 +58,9 @@ const AddRoom = () => {
     } catch (err) {
       setErrorMessage(err.message);
     }
-    setTimeout(()=>{
-        setErrorMessage("");
-        setSuccessMessage("");
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
     }, 3000);
   };
 
@@ -82,10 +83,11 @@ const AddRoom = () => {
                 {errorMessage}
               </div>
             )}
+
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="roomType" className="form-label">
-                  room Type
+                  Room Type
                 </label>
                 <div>
                   <RoomTypeSelector
@@ -95,26 +97,28 @@ const AddRoom = () => {
                 </div>
               </div>
               <div className="mb-3">
-                <label htmlFor="roomType" className="form-label">
-                  room Price
+                <label htmlFor="roomPrice" className="form-label">
+                  Room Price
                 </label>
                 <input
-                  className="form-control"
                   required
+                  type="number"
+                  className="form-control"
                   id="roomPrice"
                   name="roomPrice"
-                  type="number"
                   value={newRoom.roomPrice}
                   onChange={handleRoomInputChange}
                 />
               </div>
+
               <div className="mb-3">
                 <label htmlFor="photo" className="form-label">
                   Room Photo
                 </label>
                 <input
-                  id="roomPhoto"
-                  name="roomPhoto"
+                  required
+                  name="photo"
+                  id="photo"
                   type="file"
                   className="form-control"
                   onChange={handleImageChange}
@@ -124,18 +128,20 @@ const AddRoom = () => {
                     src={imagePreview}
                     alt="Preview  room photo"
                     style={{ maxWidth: "400px", maxHeight: "400px" }}
-                    className="mt-3"
+                    className="mb-3"
                   ></img>
                 )}
               </div>
               <div className="d-grid gap-2 d-md-flex mt-2">
+                <Link to={"/existing-rooms"} className="btn btn-outline-info">
+                  Existing rooms
+                </Link>
                 <button type="submit" className="btn btn-outline-primary ml-5">
                   Save Room
                 </button>
               </div>
             </form>
           </div>
-          <ExistingRooms />
         </div>
       </section>
     </>

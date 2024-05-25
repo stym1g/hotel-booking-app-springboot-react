@@ -1,6 +1,7 @@
 package com.example.hotelbookingappspringbootreact.controller;
 
 import com.example.hotelbookingappspringbootreact.exception.PhotoRetrievalException;
+import com.example.hotelbookingappspringbootreact.exception.ResourceNotFoundException;
 import com.example.hotelbookingappspringbootreact.model.BookedRoom;
 import com.example.hotelbookingappspringbootreact.model.Room;
 import com.example.hotelbookingappspringbootreact.response.BookingResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -21,6 +23,7 @@ import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +56,7 @@ public class RoomController {
             if(photoBytes != null && photoBytes.length > 0){
                 String base64Photo = Base64.encodeBase64String(photoBytes);
                 RoomResponse roomResponse = getRoomResponse(room);
+                assert roomResponse != null;
                 roomResponse.setPhoto(base64Photo);
                 roomResponses.add(roomResponse);
             }
@@ -60,10 +64,36 @@ public class RoomController {
         return ResponseEntity.ok(roomResponses);
     }
 
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable Long roomId){
+        Optional<Room> room = roomService.getRoomById(roomId);
+        return room.map(theRoom -> {
+            RoomResponse roomResponse = getRoomResponse(theRoom);
+            assert roomResponse != null;
+            return ResponseEntity.ok(Optional.of(roomResponse));
+        }).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+    }
+
     @DeleteMapping("/delete/room/{roomId}")
     public ResponseEntity<Void> deleteRoom(@PathVariable("roomId") Long roomId){
         roomService.deleteRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/update/room/{roomId}")
+    public ResponseEntity<RoomResponse> updateroom(@PathVariable Long roomId,
+                                                   @RequestParam(required = false) String roomType,
+                                                   @RequestParam(required = false) BigDecimal roomPrice,
+                                                   @RequestParam(required = false) MultipartFile photo) throws SQLException, IOException {
+        byte[] photoBytes = photo != null && !photo.isEmpty() ?
+                photo.getBytes() :
+                roomService.getRoomPhotoByRoomId(roomId);
+        Blob photoBlob = photoBytes != null && photoBytes.length > 0 ?
+                new SerialBlob(photoBytes) : null;
+        Room room = roomService.updateRoom(roomId, roomType, roomPrice, photoBytes);
+        room.setPhoto(photoBlob);
+        RoomResponse roomResponse = getRoomResponse(room);
+        return ResponseEntity.ok(roomResponse);
     }
 
     private RoomResponse getRoomResponse(Room room) {

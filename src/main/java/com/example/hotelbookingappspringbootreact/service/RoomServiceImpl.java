@@ -1,5 +1,6 @@
 package com.example.hotelbookingappspringbootreact.service;
 
+import com.example.hotelbookingappspringbootreact.exception.InternalServerException;
 import com.example.hotelbookingappspringbootreact.exception.ResourceNotFoundException;
 import com.example.hotelbookingappspringbootreact.model.Room;
 import com.example.hotelbookingappspringbootreact.repository.RoomRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -68,5 +70,29 @@ public class RoomServiceImpl implements IRoomService {
         }
     }
 
+    @Override
+    public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, byte[] photoBytes) {
+        Room room = roomRepository.findById(roomId).
+                orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        if(roomType != null){
+            room.setRoomType(roomType);
+        }
+        if(roomPrice != null){
+            room.setRoomPrice(roomPrice);
+        }
+        if(photoBytes != null && photoBytes.length > 0){
+            try{
+                room.setPhoto(new SerialBlob(photoBytes));
+            } catch (SQLException e) {
+                throw new InternalServerException("Error updating room");
+            }
+        }
+        return roomRepository.save(room);
+    }
+
+    @Override
+    public Optional<Room> getRoomById(Long roomId) {
+        return Optional.of(roomRepository.findById(roomId).get());
+    }
 
 }
