@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 const RoomFilter = ({data, setFilteredData}) => {
     const [filter, setFilter] = useState("");
     const handleSelectChange = (e) => {
+        debugger;
         const selectedRoomType = e.target.value;
         setFilter(selectedRoomType);
-        const filteredRooms = data.filter((room) => room.roomType.toLowerCase().includes(selectedRoomType.toLowerCase()));
+        const filteredRooms = data.filter((room) => room.roomType.toLowerCase() === selectedRoomType.toLowerCase());
         setFilteredData(filteredRooms);
     }
     const clearFilter = () => {
